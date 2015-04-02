@@ -1,0 +1,97 @@
+setup:
+    - command: out
+      pin: /sys/kernel/debug/gpio_debug/gpio12/current_direction
+    - command: out
+      pin: /sys/kernel/debug/gpio_debug/gpio49/current_direction
+    - command: out
+      pin: /sys/kernel/debug/gpio_debug/gpio13/current_direction
+    - command: out
+      pin: /sys/kernel/debug/gpio_debug/gpio47/current_direction
+    - command: out
+      pin: /sys/kernel/debug/gpio_debug/gpio48/current_direction
+    - command: out
+      pin: /sys/kernel/debug/gpio_debug/gpio14/current_direction
+    - command: out
+      pin: /sys/kernel/debug/gpio_debug/gpio15/current_direction
+    - command: high
+      pin: /sys/kernel/debug/gpio_debug/gpio12/current_value
+    - command: high
+      pin: /sys/kernel/debug/gpio_debug/gpio49/current_value
+    - command: high
+      pin: /sys/kernel/debug/gpio_debug/gpio13/current_value
+    - command: low
+      pin: /sys/kernel/debug/gpio_debug/gpio47/current_value
+    - command: low
+      pin: /sys/kernel/debug/gpio_debug/gpio48/current_value
+    - command: low
+      pin: /sys/kernel/debug/gpio_debug/gpio14/current_value
+    - command: low
+      pin: /sys/kernel/debug/gpio_debug/gpio15/current_value
+
+pins:
+    tail:
+        left:
+            value:
+                path: /sys/kernel/debug/gpio_debug/gpio48/current_value
+                initialize: low
+                fp: null
+            direction:
+                path: /sys/kernel/debug/gpio_debug/gpio48/current_direction
+                initialize: out
+                fp: null
+        right: 
+            value:
+                path: /sys/kernel/debug/gpio_debug/gpio47/current_value
+                initialize: low
+                fp: null
+            direction:
+                path: /sys/kernel/debug/gpio_debug/gpio48/current_direction
+                initialize: out
+                fp: null
+    pitch:
+        up:
+            value:
+                path: /sys/kernel/debug/gpio_debug/gpio15/current_value
+                initialize: low
+                fp: null
+            direction:
+                path: /sys/kernel/debug/gpio_debug/gpio15/current_direction
+                initialize: out
+                fp: null
+        down:
+            value:
+                path: /sys/kernel/debug/gpio_debug/gpio14/current_value
+                initialize: low
+                fp: null
+            direction:
+                path: /sys/kernel/debug/gpio_debug/gpio14/current_direction
+                initialize: out
+                fp: null
+    misc:
+        gpio12:
+            value:
+                path: /sys/kernel/debug/gpio_debug/gpio12/current_value
+                initialize: high
+                fp: null
+            direction:
+                path: /sys/kernel/debug/gpio_debug/gpio12/current_direction
+                initialize: out
+                fp: null
+        gpio13:
+            value:
+                path: /sys/kernel/debug/gpio_debug/gpio13/current_value
+                initialize: high
+                fp: null
+            direction:
+                path: /sys/kernel/debug/gpio_debug/gpio13/current_direction
+                initialize: out 
+                fp: null
+        gpio49:
+            value:
+                path: /sys/kernel/debug/gpio_debug/gpio49/current_value
+                initialize: high
+                fp: null
+            direction:
+                path: /sys/kernel/debug/gpio_debug/gpio49/current_direction
+                initialize: out
+                fp: null
