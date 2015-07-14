@@ -45,11 +45,11 @@ system "stty  cbreak </dev/tty >/dev/tty 2>&1";
 my $key = 's';
 while (!($key =~ 'q')) {
         $key = getc(TTY);
-        if ($key =~ 'a')        { print " left\n"; foreach my $cmd (@tail_left) { system($cmd) } }
-        elsif ($key =~ 'd')     { print " right\n"; foreach my $cmd (@tail_right) { system($cmd) } }
-        elsif ($key =~ 's')     { print " idle\n"; foreach my $cmd (@all_idle) { system($cmd) } }
-        elsif ($key =~ 'w')     { print " up\n"; foreach my $cmd (@pitch_up) { system($cmd) } }
-        elsif ($key =~ 'x')     { print " down\n"; foreach my $cmd (@pitch_down) { system($cmd) } }
+        if ($key =~ '4')        { print " left\n"; foreach my $cmd (@tail_left) { system($cmd) } }
+        elsif ($key =~ '6')     { print " right\n"; foreach my $cmd (@tail_right) { system($cmd) } }
+        elsif ($key =~ '5')     { print " idle\n"; foreach my $cmd (@all_idle) { system($cmd) } }
+        elsif ($key =~ '2')     { print " up\n"; foreach my $cmd (@pitch_up) { system($cmd) } }
+        elsif ($key =~ '8')     { print " down\n"; foreach my $cmd (@pitch_down) { system($cmd) } }
         else                    { print " not a command\n" }
 }
 
