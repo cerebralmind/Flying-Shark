@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="initial-scale=1"/>
+  <title>Sharkie Cam</title>
+  <style type="text/css">
+    #canvas-video {
+      /*width: 640px;
+      height: 480px;*/
+      border: 1px solid #ccc;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/shark.css">
+</head>
+<body class="full" >
+  <!-- Reference: https://github.com/phoboslab/jsmpeg/blob/master/stream-example.html -->
+
+  <div class="container white full">
+    <div class="jumbotron">
+        <h1>Sharkie Cam</h1>
+        <p>The Edison Spy Shark</p>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Shark Feed</h2>
+                </div>
+            <!--
+              The canvas size specified here is the "initial" internal resolution. jsmpeg will
+              change this internal resolution to whatever the source provides. The size the
+              canvas is displayed on the website is dictated by the CSS style.
+            -->
+                <div class="panel-body navigation">
+                    <canvas id="canvas-video" width="320" height="240"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Control Panel</h2>
+                </div>
+                <div class="panel-body navigation">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+				<object data="images/svg-menu.svg" type="image/svg+xml" id="menu-svg">
+			        </object>
+                        </div>
+                    </div>
+                    <div class="row navigation command ">
+                        <div class="col-md-10 panel col-md-offset-1 code">
+                        <h3><span class="glyphicon glyphicon-console"></span> <span id="command">idle</span></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <script src="/jsmpg.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <!---script src="/socket.io/socket.io.js"></script>
+  <script src="/jquery.min.js"></script-->
+  <link rel="stylesheet" href="/css/bootstrap-responsive.css">
+  <script src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    // CHANGE THIS TO THE APPROPRIATE WS ADDRESS
+    //var wsUrl = 'ws://192.168.1.32:8084/';
+    var wsUrl = 'ws://192.168.1.32:8084/';
+
+    // Show loading notice
+    var canvas = document.getElementById('canvas-video');
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#333';
+    ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
+
+    // Start the player
+    var client = new WebSocket(wsUrl);
+    var player = new jsmpeg(client, { canvas:canvas });
+
+    // The video is 4:3 and the screen is probably more like 16:9 so we're going to rescale
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+
+    if (w*3 > h*4) {
+      canvas.style.height = (100*(w*3/(4*h)))+"%";
+    }
+
+    var sharkie;
+
+    window.onload = function() {
+      console.log('Setting up socket connections:');
+
+      // We use the robot nsp (namespace) to connect to one of the devices
+      // in this case the led we added in our cylon robot code
+      sharkie = io('http://192.168.1.32:3000/api/robots/sharkie');
+      /*setInterval(function() {
+        device.emit('toggle');
+      }, 1000);
+     */
+      $(document).keydown(function(event) {
+        var key = event.which;
+        if (key == 32) {
+            sharkie.emit('swim');
+        }
+        else if (key == 37 || key == 65) {
+            sharkie.emit('turn_left');
+        }
+        else if (key == 38 || key == 87) {
+            sharkie.emit('climb');
+        }
+        else if (key == 39 || key == 68) {
+            sharkie.emit('turn_right');
+        }
+        else if (key == 40 || key == 88) {
+            sharkie.emit('dive');
+        }
+      });
+
+      $(document).keyup(function(event) {
+        var key = event.which;
+        if (key == 32) {
+            sharkie.emit('idle_all');
+            sharkie.emit('all_idle');
+        }
+        else if (key == 37 || key == 39 || key == 65 || key == 68) {
+            sharkie.emit('idle_tail');
+        }
+        else if (key == 38 || key == 40 || key == 87 || key == 87) {
+            sharkie.emit('idle_pitch');
+        }
+      });
+
+      sharkie.on('message', function(payload) {
+        console.log('On Device');
+        console.log('  Event:', payload.event);
+        console.log('  Data:', payload.data);
+        $('#messages').append($('<li>').text('On Device:'));
+        $('#messages').append($('<li>').text('  Event:' + payload.event.toString()));
+        if (!!payload.data) {
+          $('#messages').append($('<li>').text('  Data:' + payload.data.toString()));
+        }
+        $('#messages').append($('<hr />'));
+
+        $('#command').text(payload.event.toString());
+      });
+
+      msg = 'You have been subscribed to Cylon sockets:' + sharkie.nsp;
+
+      $('#messages').append($('<li>').text(msg));
+    };
+
+       var a = document.getElementById("menu-svg");
+       $('#menu-svg').on('contextmenu', "#menu-svg", function(e) { return false; });
+
+       window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
+        //it's important to add an load event listener to the object, as it will load the svg doc asynchronously
+        a.addEventListener("load",function(){
+            var svgDoc = a.contentDocument; //get the inner DOM of alpha.svg
+
+            var up_arrow = svgDoc.getElementById("up"); //get the inner element by id
+            var down_arrow = svgDoc.getElementById("down"); //get the inner element by id
+            var left_arrow = svgDoc.getElementById("left"); //get the inner element by id
+            var right_arrow = svgDoc.getElementById("right"); //get the inner element by id
+
+            left_arrow.addEventListener("mousedown",function(){window.sharkie.emit('turn_left')},false);    //add behaviour
+            left_arrow.addEventListener("mouseup",function(){window.sharkie.emit('idle_tail')},false);    //add behaviour
+            right_arrow.addEventListener("mousedown",function(){window.sharkie.emit('turn_right')},false);    //add behaviour
+            right_arrow.addEventListener("mouseup",function(){window.sharkie.emit('idle_tail')},false);    //add behaviour
+            up_arrow.addEventListener("mousedown",function(){window.sharkie.emit('climb')},false);    //add behaviour
+            up_arrow.addEventListener("mouseup",function(){window.sharkie.emit('idle_pitch')},false);    //add behaviour
+            down_arrow.addEventListener("mousedown",function(){window.sharkie.emit('dive')},false);    //add behaviour
+            down_arrow.addEventListener("mouseup",function(){window.sharkie.emit('idle_pitch')},false);    //add behaviour
+        },false);
+  </script>
+</body>
+</html>
