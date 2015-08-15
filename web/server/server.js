@@ -3,6 +3,7 @@ var childProcess = require('child_process')
   , express = require('express')
   , http = require('http')
   , morgan = require('morgan')
+  , io = require('socket.io')
   , ws = require('ws');
 
 // configuration files
@@ -15,7 +16,7 @@ app.use(express.static(configServer.staticFolder));
 app.use(express.static(configServer.bootstrapFolder));
 app.use(express.static(configServer.imagesFolder));
 app.use(express.static(configServer.jqueryFolder));
-//app.use(express.static(configServer.socketioFolder));
+app.use(express.static(configServer.socketioFolder));
 app.use(morgan('dev'));
 
 // serve index

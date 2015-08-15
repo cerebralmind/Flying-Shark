@@ -61,16 +61,16 @@
   </div>
 
   <script src="/jsmpg.js"></script>
-  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-  <!---script src="/socket.io/socket.io.js"></script>
-  <script src="/jquery.min.js"></script-->
+  <!--script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script-->
+  <script src="/socket.io.js"></script>
+  <script src="/jquery.min.js"></script>
   <link rel="stylesheet" href="/css/bootstrap-responsive.css">
   <script src="/js/bootstrap.min.js"></script>
   <script type="text/javascript">
     // CHANGE THIS TO THE APPROPRIATE WS ADDRESS
     //var wsUrl = 'ws://192.168.1.32:8084/';
-    var wsUrl = 'ws://192.168.1.32:8084/';
+    var wsUrl = 'ws://192.168.1.17:8084/';
 
     // Show loading notice
     var canvas = document.getElementById('canvas-video');
@@ -97,7 +97,7 @@
 
       // We use the robot nsp (namespace) to connect to one of the devices
       // in this case the led we added in our cylon robot code
-      sharkie = io('http://192.168.1.32:3000/api/robots/sharkie');
+      sharkie = io('http://192.168.1.17:3000/api/robots/sharkie');
       /*setInterval(function() {
         device.emit('toggle');
       }, 1000);
@@ -107,12 +107,12 @@
         if (key == 32) {
             sharkie.emit('swim');
         }
-        else if (key == 37 || key == 65) {
-            sharkie.emit('turn_left');
-        }
         else if (key == 38 || key == 87) {
             sharkie.emit('climb');
         }
+	else if (key == 37 || key == 65) {
+	    sharkie.emit('turn_left');
+	}
         else if (key == 39 || key == 68) {
             sharkie.emit('turn_right');
         }
