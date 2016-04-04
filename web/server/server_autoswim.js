@@ -92,7 +92,7 @@ var Cylon = require('cylon');
 Cylon.robot({
   name: 'sharkie',
 
-  events: ['turn_left', 'turn_right', 'climb', 'dive', 'idle_all', 'idle_tail', 'idle_pitch'],
+  events: ['turn_left', 'turn_right', 'climb', 'dive', 'idle_all', 'idle_tail', 'idle_pitch', 'swim', 'duration_minus', 'duration_plus'],
 
   commands: function() {
     return {
@@ -103,6 +103,9 @@ Cylon.robot({
         idle_all: this.idleAll,
         idle_pitch: this.idlePitch,
         idle_tail: this.idleTail,
+        swim: this.autoSwim,
+        duration_minus: this.durationMinus,
+        duration_plus: this.durationPlus,
     };
   },
           
@@ -129,8 +132,22 @@ Cylon.robot({
     // ./**-client.html
     //every((1).second(), my.led.toggle);
     //this.idleAll();
+    my.autoswim = false;
+    my.duration = 0.5;
+    my.MAX_DURATION = 0.75;
+    my.MIN_DURATION = 0.25;
     after((5).seconds(), function() {
 	 this.configureHBridge();
+	      every((my.duration * 2).seconds(), function() {
+	      console.log('Autoswim ' + my.autoswim);
+	      if (my.autoswim) {
+		    console.log('Autoswim on');
+		    my.turnLeft();
+		    after((my.duration).seconds(), function() {
+			my.turnRight();
+		    });
+	      }
+	      });
     }.bind(this));
   },
  
@@ -181,6 +198,21 @@ Cylon.robot({
       console.log('all idle');
       this.idlePitch();
       this.idleTail();
+  },
+
+  autoSwim: function() {
+      this.autoswim = !this.autoswim;
+      console.log('Swimming ' + this.autoswim);
+  },
+
+  durationMinus: function() {
+      this.duration = (this.duration >= this.MAX_DURATION)? this.MAX_DURATION : this.duration - 0.05;
+      console.log('swim duration ' + this.duration);
+  },
+
+  durationPlus: function() {
+      this.duration = (this.duration <= this.MIN_DURATION)? this.MIN_DURATION : this.duration + 0.05;
+      console.log('swim duration ' + this.duration);
   },
 });
 

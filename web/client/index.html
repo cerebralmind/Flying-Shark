@@ -70,13 +70,14 @@
   <script type="text/javascript">
     // CHANGE THIS TO THE APPROPRIATE WS ADDRESS
     //var wsUrl = 'ws://192.168.1.32:8084/';
-    var wsUrl = 'ws://192.168.1.32:8084/';
+    var wsUrl = 'ws://10.170.81.171:8084/';
 
     // Show loading notice
     var canvas = document.getElementById('canvas-video');
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '#333';
     ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
+    ctx.rotate(20*Math.PI/90);
 
     // Start the player
     var client = new WebSocket(wsUrl);
@@ -97,7 +98,7 @@
 
       // We use the robot nsp (namespace) to connect to one of the devices
       // in this case the led we added in our cylon robot code
-      sharkie = io('http://192.168.1.32:3000/api/robots/sharkie');
+      sharkie = io('http://10.170.81.171:3000/api/robots/sharkie');
       /*setInterval(function() {
         device.emit('toggle');
       }, 1000);
@@ -119,13 +120,25 @@
         else if (key == 40 || key == 88) {
             sharkie.emit('dive');
         }
+        else if (key == 189) {
+            sharkie.emit('duration_minus');
+        }
+        else if (key == 187) {
+            sharkie.emit('duration_plus');
+        }
+        else if (key == 57) {
+            sharkie.emit('duty_minus');
+        }
+        else if (key == 48) {
+            sharkie.emit('duty_plus');
+        }
       });
 
       $(document).keyup(function(event) {
         var key = event.which;
         if (key == 32) {
-            sharkie.emit('idle_all');
-            sharkie.emit('all_idle');
+            //sharkie.emit('idle_all');
+            //sharkie.emit('all_idle');
         }
         else if (key == 37 || key == 39 || key == 65 || key == 68) {
             sharkie.emit('idle_tail');
